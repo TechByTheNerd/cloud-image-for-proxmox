@@ -1,4 +1,4 @@
-# prox-cloud-template-add
+# Creating Ubuntu Cloud Images for ProxMox
 
 This script is if you want to:
 
