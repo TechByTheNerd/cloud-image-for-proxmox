@@ -28,7 +28,7 @@ echo ""
 
 if [[ "$1" == "" || $1 == "?" || $1 == "/?" || $1 == "--help" ]];
 then
-    echo -e "USAGE: sudo $0 [id] [storage] [distro] [user] [password] [searchdomain] [launchpadid]\n\n\tsudo $0 4000 SSD-01A focal sysadmin G00dPazz22 intranet.example.com jdoe\n"
+    echo -e "USAGE: sudo $0 [id] [storage] [distro] [version] [user] [password] [searchdomain] [launchpadid]\n\n\tsudo $0 4000 SSD-01A focal sysadmin G00dPazz22 intranet.example.com jdoe\n"
     exit -2
 fi
 
@@ -38,7 +38,7 @@ then
     exit -1
 fi
 
-# [id] [storage] [distro] [user] [password]
+# [id] [storage] [distro] [version] [user] [password]
 
 if [ ! -z "$1" ] ; then
     VM_ID="$1"
@@ -59,41 +59,54 @@ else
     exit -1
 fi
 if [ ! -z "$4" ] ; then
-    STD_USER_NAME="$4"
+    UBUNTU_VERSION="$4"
+else
+    echo -e "ERROR: [version] missing. (ex.: 22.04, 20.04, etc)\n"
+    exit -1
+fi
+if [ ! -z "$5" ] ; then
+    STD_USER_NAME="$5"
 else
     echo -e "ERROR: [user] missing. (ex.: sysadmin)\n"
     exit -1
 fi
-if [ ! -z "$5" ] ; then
-    STD_USER_PASSWORD="$5"
+if [ ! -z "$6" ] ; then
+    STD_USER_PASSWORD="$6"
 else
     echo -e "ERROR: [password] missing. (ex.: P4zzw0rd!)\n"
     exit -1
 fi
-if [ ! -z "$6" ] ; then
-    SEARCH_DOMAIN="$6"
+if [ ! -z "$7" ] ; then
+    SEARCH_DOMAIN="$7"
 else
     echo -e "ERROR: [searchdomain] missing. (ex.: intranet.example.com)\n"
     exit -1
 fi
-if [ ! -z "$7" ] ; then
-    LAUNCHPAD_ID="$7"
+if [ ! -z "$8" ] ; then
+    LAUNCHPAD_ID="$8"
 else
     echo -e "ERROR: [launchpadid] missing. (ex.: jdoe)\n"
     exit -1
+fi
+
+if [[ "${UBUNTU_VERSION}" == "16.04" ]] ; then
+    IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk1.img"
+else
+    IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64.img"
 fi
 
 MEM_SIZE="2048"
 CORES="4"
 DISK_SIZE="120G"
 SSH_KEYS="./keys"
-IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64.img"
 IMAGE_URL="https://cloud-images.ubuntu.com/${UBUNTU_DISTRO}/current/${IMAGE_FILE}"
 HASH_URL="https://cloud-images.ubuntu.com/${UBUNTU_DISTRO}/current/SHA256SUMS"
 HASH_FILE="${UBUNTU_DISTRO}_SHA256SUMS"
+
 echo ""
 echo "VM_ID................: $VM_ID"
 echo "UBUNTU_DISTRO........: $UBUNTU_DISTRO"
+echo "UBUNTU_VERSION.......: $UBUNTU_VERSION"
 echo "STORAGE_NAME.........: $STORAGE_NAME"
 echo "IMAGE_FILE...........: $IMAGE_FILE"
 echo "IMAGE_URL............: $IMAGE_URL"
@@ -106,13 +119,13 @@ echo "LAUNCHPAD_ID.........: $LAUNCHPAD_ID"
 echo ""
 
 function setStatus(){
-    
+
     description=$1
     severity=$2
-    
+
     logger "$Name $Version: [${severity}] $description"
-    
-    
+
+
     case "$severity" in
         s)
             echo -e "[${LightGreen}+${NC}] ${LightGreen}${description}${NC}"
@@ -127,22 +140,22 @@ function setStatus(){
             echo -e "[${LightCyan}*${NC}] ${LightCyan}${description}${NC}"
         ;;
     esac
-    
+
     [[ $WithVoice -eq 1 ]] && echo -e ${description} | espeak
 }
 
 function runCommand(){
-    
+
     beforeText=$1
     afterText=$2
     commandToRun=$3
-    
+
     setStatus "${beforeText}" "s"
-    
+
     eval $commandToRun
-    
+
     setStatus "$afterText" "s"
-    
+
 }
 
 setStatus "STEP 1: Get Ubuntu Cloud image and SHA256 hash" "*"
@@ -152,14 +165,14 @@ ATTEMPT=0
 
 while [ $HASHES_MATCH -lt 1 ]
 do
-    
+
     ATTEMPT=$(($ATTEMPT+1))
-    
+
     setStatus "Checking to see if '${IMAGE_FILE}-orig' has been downloaded (attempt: $ATTEMPT)..." "*"
     if [ ! -f ./${IMAGE_FILE}-orig ]; then
         setStatus " - File not found." "f"
         setStatus " - Downloading file from internet (${IMAGE_URL})..." "*"
-        
+
         if wget ${IMAGE_URL} -v --output-document=${IMAGE_FILE}-orig ; then
             setStatus " - Complete." "s"
         else
@@ -178,21 +191,21 @@ do
             fi
         fi
     fi
-    
+
     setStatus "Generating SHA256 hash from the file on-disk..." "*"
     SHA256_HASH_ONDISK=`sha256sum ./${IMAGE_FILE}-orig | cut -d ' ' -f1`
     setStatus " - Done: $SHA256_HASH_ONDISK" "s"
-    
+
     setStatus "Downloading SHA256 sums from Ubuntu (${HASH_URL})..." "*"
     if wget -q -N ${HASH_URL} --output-document=${HASH_FILE} ; then
         setStatus " - Extracting SHA256 hash from Ubuntu (${HASH_FILE})..." "*"
-        SHA256_HASH_FROMINET=`grep "amd64.img" ./${HASH_FILE} | cut -d ' ' -f1`
+        SHA256_HASH_FROMINET=`grep "${IMAGE_FILE}" ./${HASH_FILE} | cut -d ' ' -f1`
         setStatus " - Done: $SHA256_HASH_FROMINET" "s"
     else
         setStatus " - Download of SHA245 hashes failed." "f"
         exit -2
     fi
-    
+
     setStatus "Comparing SHA256 hashes..." "*"
     if [[ "$SHA256_HASH_ONDISK" != "$SHA256_HASH_FROMINET" ]]; then
         HASHES_MATCH=0
@@ -201,12 +214,12 @@ do
         HASHES_MATCH=1
         setStatus " - Hashes match." "s"
     fi
-    
+
     if [ $ATTEMPT -gt 3 ]; then
         setStatus "FATAL: Can't seem to download a valid image and confirm the SHA256 hash after 3 attempts. Cannot continue." "f"
         exit -1
     fi
-    
+
 done
 
 cp ./${IMAGE_FILE}-orig ./${IMAGE_FILE}
@@ -220,7 +233,6 @@ fi
 
 setStatus "STEP 1c: Configure VM template with software."
 if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent \
-    && virt-customize -a ./${IMAGE_FILE} --install neofetch \
     && virt-customize -a ./${IMAGE_FILE} --install figlet \
     && virt-customize -a ./${IMAGE_FILE} --install ufw \
     && virt-customize -a ./${IMAGE_FILE} --install fail2ban ; then
@@ -230,7 +242,7 @@ else
 fi
 
 setStatus "STEP 2: Create a virtual machine" "*"
-if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} --net0 virtio,bridge=vmbr0 --tags cloud-image,ubuntu,ubuntu-${UBUNTU_DISTRO} ; then
+if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} --net0 virtio,bridge=vmbr0 --tags cloud-image,ubuntu,ubuntu-${UBUNTU_VERSION},ubuntu-${UBUNTU_DISTRO} ; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"
@@ -238,7 +250,7 @@ else
 fi
 
 setStatus "STEP 3: Import the disk into the proxmox storage, into '${STORAGE_NAME}' in this case."
-if qm importdisk ${VM_ID} ./${UBUNTU_DISTRO}-server-cloudimg-amd64.img ${STORAGE_NAME} ; then
+if qm importdisk ${VM_ID} ./${IMAGE_FILE} ${STORAGE_NAME} ; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"
@@ -303,7 +315,7 @@ ATTEMPT=0
 while [ $ATTEMPT -lt 5 ];
 do
     ATTEMPT=$(($ATTEMPT + 1))
-    
+
     if qm resize ${VM_ID} scsi0 ${DISK_SIZE} ; then
         setStatus " - Success." "s"
         ATTEMPT=100
