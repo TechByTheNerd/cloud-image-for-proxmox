@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOTE: Requires apt-get install libguestfs-tools
+
 Black='\033[0;30m'
 DarkGray='\033[1;30m'
 Red='\033[0;31m'
@@ -153,12 +155,12 @@ do
     
     ATTEMPT=$(($ATTEMPT+1))
     
-    setStatus "Checking to see if '${IMAGE_FILE}' has been downloaded (attempt: $ATTEMPT)..." "*"
-    if [ ! -f ./${IMAGE_FILE} ]; then
+    setStatus "Checking to see if '${IMAGE_FILE}-orig' has been downloaded (attempt: $ATTEMPT)..." "*"
+    if [ ! -f ./${IMAGE_FILE}-orig ]; then
         setStatus " - File not found." "f"
         setStatus " - Downloading file from internet (${IMAGE_URL})..." "*"
         
-        if wget ${IMAGE_URL} -v --output-document=${IMAGE_FILE} ; then
+        if wget ${IMAGE_URL} -v --output-document=${IMAGE_FILE}-orig ; then
             setStatus " - Complete." "s"
         else
             setStatus " - Download failed." "f"
@@ -169,7 +171,7 @@ do
         if [ "$HASHES_MATCH" -eq "0" ]; then
             setStatus " - SHA256 hashes do not match. File is invalid." "f"
             setStatus " - Downloading file from internet and overwriting invalid, local file (${IMAGE_URL})..." "*"
-            if wget ${IMAGE_URL} -v --output-document=${IMAGE_FILE} ; then
+            if wget ${IMAGE_URL} -v --output-document=${IMAGE_FILE}-orig ; then
                 setStatus " - Complete." "s"
             else
                 setStatus " - Download failed." "f"
@@ -178,7 +180,7 @@ do
     fi
     
     setStatus "Generating SHA256 hash from the file on-disk..." "*"
-    SHA256_HASH_ONDISK=`sha256sum ./${IMAGE_FILE} | cut -d ' ' -f1`
+    SHA256_HASH_ONDISK=`sha256sum ./${IMAGE_FILE}-orig | cut -d ' ' -f1`
     setStatus " - Done: $SHA256_HASH_ONDISK" "s"
     
     setStatus "Downloading SHA256 sums from Ubuntu (${HASH_URL})..." "*"
@@ -207,6 +209,8 @@ do
     
 done
 
+cp ./${IMAGE_FILE}-orig ./${IMAGE_FILE}
+
 setStatus "STEP 1b: Purge existing VM template (${VM_ID}) if it already exists."
 if qm destroy ${VM_ID} --purge ; then
     setStatus " - Successfully deleted." "s"
@@ -214,8 +218,19 @@ else
     setStatus " - No existing template found." "s"
 fi
 
+setStatus "STEP 1c: Configure VM template with software."
+if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent \
+    && virt-customize -a ./${IMAGE_FILE} --install neofetch \
+    && virt-customize -a ./${IMAGE_FILE} --install figlet \
+    && virt-customize -a ./${IMAGE_FILE} --install ufw \
+    && virt-customize -a ./${IMAGE_FILE} --install fail2ban ; then
+    setStatus " - Successfully installed." "s"
+else
+    setStatus " - Unable to install software into image file ./${IMAGE_FILE}." "s"
+fi
+
 setStatus "STEP 2: Create a virtual machine" "*"
-if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} --net0 virtio,bridge=vmbr0 ; then
+if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} --net0 virtio,bridge=vmbr0 --tags cloud-image,ubuntu,ubuntu-${UBUNTU_DISTRO} ; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"
