@@ -18,18 +18,20 @@ So, it's just a few notches more-configured than if you installed the Ubuntu OS 
 In short, this is what you need to run this script:
 
 ```bash
-sudo ./prox-cloud-template-add.sh [id] [storage] [distro] [user] [password] [searchdomain] [launchpadid]
+sudo ./prox-cloud-template-add.sh [id] [storage] [distro] [version] [user] [password] [searchdomain] [launchpadid]
 ```
 or as an example:
 ```bash
-sudo ./prox-cloud-template-add.sh 4000 SSD-01A focal sysadmin G00dPazz22 intranet.example.com jdoe
+sudo ./prox-cloud-template-add.sh 4000 SSD-01A focal 20.04 sysadmin G00dPazz22 intranet.example.com jdoe
 ```
+
 
 Below are what these values are:
 
 - `id` is the ProxMox number ID you want to label this template. I'm using higher numbers and use this for metadata. For example an `id` of `282004` is ProxMox server 2, 8 is an arbitrary number for Ubuntu, and 2004 represents the `20.04 LTS` release. You can use whatever you want, but it needs to be an integer.
 - `storage` is the name of the ProxMox storage device where you want to store the template. This might be `Local-LVM` or any mounted storage you have available on the same ProxMox server.
 - `distro` is the word name of the Ubuntu version, NOT the number version. See [this page](https://cloud-images.ubuntu.com/) as an example.
+- `version` is the numeric version of the Ubuntu version (e.g. 18.04, 20.04, 22.04, etc).
 - `user` is the name of the non-root, default user who will have `sudo` privilege.
 - `password` is the password for `user`, in plain-text.
 - `searchdomain` is a network setting. When you search for a server name, if it can't be found, the network stack can add-on different DNS domain suffixes to try to find the server. For example you might know "server123", but it's fully-qualified-domain-name is "server123.lab.example.com". In this case, if you set this to "lab.example.com" it will add this onto DNS queries to help file machines that you try to access.
@@ -95,6 +97,7 @@ ProxMox / Ubuntu Cloud Init Image Creation Utility (PUCIICU) v1.0.0-alpha.1
 
 VM_ID................: 181804
 UBUNTU_DISTRO........: focal
+UBUNTU_VERSION.......: 20.04
 STORAGE_NAME.........: SSD-01A
 IMAGE_FILE...........: focal-server-cloudimg-amd64.img
 IMAGE_URL............: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
@@ -161,7 +164,7 @@ Saving to: ‘./keys’
 
 [+]  - Success.
 [*] STEP 9: Set other template variables...
-update VM 181804: -agent 1 -cipassword <hidden> -ciuser sysadmin -cores 4 -description Virtual machine based on the Ubuntu 'focal' Cloud image. -ipconfig0 ip=dhcp -onboot 1 -ostype l26 -searchdomain lab.example.com -sshkeys ssh-rsa%20AAAA---SNIP---%20robert%40computername
+update VM 181804: -agent 1 -cipassword <hidden> -ciuser sysadmin -cores 4 -description Virtual machine based on the Ubuntu 'focal' Cloud image. -ipconfig0 ip=dhcp -onboot 1 -ostype l26 -searchdomain lab.example.com -sshkeys ssh-rsa%20AAAA---SNIP---%20jdoe%40computername
 [+]  - Success.
 [*] STEP 10: Resize boot disk to 120GB
 command '/usr/bin/qemu-img resize -f raw /mnt/pve/SSD-01A/images/181804/vm-181804-disk-0.raw 128849018880' failed: got timeout
@@ -226,27 +229,31 @@ I have 4 proxmox servers. here's what I ran (with some details changed) to set u
 
 ```bash
 # This gets run from pmvm01 as root where my SSD storage is mounted as SSD-01A:
-./prox-cloud-template-add.sh 181804 SSD-01A bionic sysadmin p4zzw0rd123! lab.example.com jdoe
-./prox-cloud-template-add.sh 182004 SSD-01A focal sysadmin p4zzw0rd123! lab.example.com jdoe
-./prox-cloud-template-add.sh 182204 SSD-01A jammy sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 181804 SSD-01A xenial 16.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 181804 SSD-01A bionic 18.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 182004 SSD-01A focal 20.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 182204 SSD-01A jammy 22.04 sysadmin p4zzw0rd123! lab.example.com jdoe
 ```
 ```bash
 # This gets run from pmvm02 as root where my SSD storage is mounted as SSD-02A:
-./prox-cloud-template-add.sh 281804 SSD-02A bionic sysadmin p4zzw0rd123! lab.example.com jdoe
-./prox-cloud-template-add.sh 282004 SSD-02A focal sysadmin p4zzw0rd123! lab.example.com jdoe
-./prox-cloud-template-add.sh 282204 SSD-02A jammy sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 281804 SSD-02A xenial 16.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 281804 SSD-02A bionic 18.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 282004 SSD-02A focal 20.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 282204 SSD-02A jammy 22.04 sysadmin p4zzw0rd123! lab.example.com jdoe
 ```
 ```bash
 # This gets run from pmvm03 as root where my SSD storage is mounted as SSD-03A:
-./prox-cloud-template-add.sh 381804 SSD-03A bionic sysadmin p4zzw0rd123! lab.example.com jdoe
-./prox-cloud-template-add.sh 382004 SSD-03A focal sysadmin p4zzw0rd123! lab.example.com jdoe
-./prox-cloud-template-add.sh 382204 SSD-03A jammy sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 381804 SSD-03A xenial 16.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 381804 SSD-03A bionic 18.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 382004 SSD-03A focal 20.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 382204 SSD-03A jammy 22.04 sysadmin p4zzw0rd123! lab.example.com jdoe
 ```
 ```bash
 # This gets run from pmvm04 as root where my SSD storage is mounted as SSD-04A:
-./prox-cloud-template-add.sh 481804 SSD-04A bionic sysadmin p4zzw0rd123! lab.example.com jdoe
-./prox-cloud-template-add.sh 482004 SSD-04A focal sysadmin p4zzw0rd123! lab.example.com jdoe
-./prox-cloud-template-add.sh 482204 SSD-04A jammy sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 481804 SSD-04A xenial 16.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 481804 SSD-04A bionic 18.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 482004 SSD-04A focal 20.04 sysadmin p4zzw0rd123! lab.example.com jdoe
+./prox-cloud-template-add.sh 482204 SSD-04A jammy 22.04 sysadmin p4zzw0rd123! lab.example.com jdoe
 ```
 
 ## More Information
