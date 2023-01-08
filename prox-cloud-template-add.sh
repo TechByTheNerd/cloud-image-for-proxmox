@@ -232,10 +232,7 @@ else
 fi
 
 setStatus "STEP 1c: Configure VM template with software."
-if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent \
-    && virt-customize -a ./${IMAGE_FILE} --install figlet \
-    && virt-customize -a ./${IMAGE_FILE} --install ufw \
-    && virt-customize -a ./${IMAGE_FILE} --install fail2ban ; then
+if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,figlet,ufw,fail2ban ; then
     setStatus " - Successfully installed." "s"
 else
     setStatus " - Unable to install software into image file ./${IMAGE_FILE}." "s"
@@ -259,10 +256,32 @@ fi
 
 setStatus "STEP 4: Add the new, imported disk to the VM."
 
-rm ${STORAGE_NAME}:${VM_ID}/vm-${VM_ID}-disk-0.raw
+# check storage type before trying to access this disk in the appropriate syntax
+STORAGE_TYPE=$(pvesm status --storage ${STORAGE_NAME} | awk 'NR == 2 {print $2}')
+if [ "$STORAGE_TYPE" = "dir" ]; then
+  setStatus " - Storage type 'Directory' detected."
+  IMPORTED_DISKFILE=${STORAGE_NAME}:${VM_ID}/vm-${VM_ID}-disk-0.raw
+  rm ${IMPORTED_DISKFILE}
+elif [ "$STORAGE_TYPE" = "lvm" ]; then
+  setStatus " - Storage type 'LVM' detected."
+  IMPORTED_DISKFILE=${STORAGE_NAME}:vm-${VM_ID}-disk-0
+  lvremove ${IMPORTED_DISKFILE}
+elif [ "$STORAGE_TYPE" = "lvmthin" ]; then
+  setStatus " - Storage type 'LVM-Thin' detected."
+  IMPORTED_DISKFILE=${STORAGE_NAME}:vm-${VM_ID}-disk-0
+  lvremove ${IMPORTED_DISKFILE}
+elif [ "$STORAGE_TYPE" = "zfspool" ]; then
+  setStatus " - Storage type 'ZFS Pool' detected."
+  IMPORTED_DISKFILE=${STORAGE_NAME}/vm-${VM_ID}-disk-0
+  zfs destroy ${IMPORTED_DISKFILE}
+else
+  setStatus " - Storage type not detected. Defaulting to treating as Directory storage."
+  IMPORTED_DISKFILE=${STORAGE_NAME}:${VM_ID}/vm-${VM_ID}-disk-0.raw
+fi
 sleep 1
 
-if qm set ${VM_ID} --scsihw virtio-scsi-pci --scsi0 ${STORAGE_NAME}:${VM_ID}/vm-${VM_ID}-disk-0.raw ; then
+
+if qm set ${VM_ID} --scsihw virtio-scsi-pci --scsi0 ${IMPORTED_DISKFILE} ; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"
