@@ -21,14 +21,16 @@ White='\033[1;37m'
 NC='\033[0m' # No Color
 
 Name='ProxMox / Ubuntu Cloud Init Image Creation Utility (PUCIICU)'
-Version='v1.0.0-alpha.1'
+Version='v1.0.0-alpha.4'
 
 echo -e "${LightPurple}$Name $Version${NC}"
 echo ""
 
 if [[ "$1" == "" || $1 == "?" || $1 == "/?" || $1 == "--help" ]];
 then
-    echo -e "USAGE: sudo $0 [id] [storage] [distro] [version] [user] [password] [searchdomain] [launchpadid]\n\n\tsudo $0 4000 SSD-01A focal sysadmin G00dPazz22 intranet.example.com jdoe\n"
+    echo -e "USAGE: sudo $0 [id] [storage] [distro] [version] [user] [password] \
+        [searchdomain] [launchpadid]\n\n\tsudo $0 4000 SSD-01A focal sysadmin \
+        G00dPazz22 intranet.example.com jdoe\n"
     exit -2
 fi
 
@@ -216,7 +218,8 @@ do
     fi
 
     if [ $ATTEMPT -gt 3 ]; then
-        setStatus "FATAL: Can't seem to download a valid image and confirm the SHA256 hash after 3 attempts. Cannot continue." "f"
+        setStatus "FATAL: Can't seem to download a valid image and confirm the \
+            SHA256 hash after 3 attempts. Cannot continue." "f"
         exit -1
     fi
 
@@ -232,14 +235,16 @@ else
 fi
 
 setStatus "STEP 1c: Configure VM template with software."
-if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,figlet,ufw,fail2ban ; then
+if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,figlet,neofetch,ufw,fail2ban \
+    --run-command "cat /dev/null > /etc/machine-id"; then
     setStatus " - Successfully installed." "s"
 else
     setStatus " - Unable to install software into image file ./${IMAGE_FILE}." "s"
 fi
 
 setStatus "STEP 2: Create a virtual machine" "*"
-if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} --net0 virtio,bridge=vmbr0 --tags cloud-image,ubuntu,ubuntu-${UBUNTU_VERSION},ubuntu-${UBUNTU_DISTRO} ; then
+if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} \
+    --net0 virtio,bridge=vmbr0 --tags cloud-image,ubuntu,ubuntu-${UBUNTU_VERSION},ubuntu-${UBUNTU_DISTRO} ; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"
@@ -304,13 +309,14 @@ else
     exit -1
 fi
 
-setStatus "STEP 7: Add support for VNC and a serial console."
-if qm set ${VM_ID} --serial0 socket --vga serial0 ; then
-    setStatus " - Success." "s"
-else
-    setStatus " - Error completing step." "f"
-    exit -1
-fi
+# I don't think this is needed? Still evaluating.
+#setStatus "STEP 7: Add support for VNC and a serial console."
+#if qm set ${VM_ID} --serial0 socket --vga serial0 ; then
+#    setStatus " - Success." "s"
+#else
+#    setStatus " - Error completing step." "f"
+#    exit -1
+#fi
 
 setStatus "STEP 8: Retrieve SSH keys from LaunchPad for: ${LAUNCHPAD_ID}..."
 if wget https://launchpad.net/~${LAUNCHPAD_ID}/+sshkeys -O ./keys ; then
@@ -321,7 +327,10 @@ else
 fi
 
 setStatus "STEP 9: Set other template variables..."
-if qm set ${VM_ID} --ciuser ${STD_USER_NAME} --cipassword ${STD_USER_PASSWORD} --cores ${CORES} --searchdomain ${SEARCH_DOMAIN} --sshkeys ${SSH_KEYS} --description "Virtual machine based on the Ubuntu '${UBUNTU_DISTRO}' Cloud image." --ipconfig0 ip=dhcp --onboot 1 --ostype l26 --agent 1 ; then
+if qm set ${VM_ID} --ciuser ${STD_USER_NAME} --cipassword ${STD_USER_PASSWORD} \
+    --cores ${CORES} --searchdomain ${SEARCH_DOMAIN} --sshkeys ${SSH_KEYS} \
+    --description "Virtual machine based on the Ubuntu '${UBUNTU_DISTRO}' Cloud \
+    image. Last generated: `date`" --ipconfig0 ip=dhcp --onboot 1 --ostype l26 --agent 1 ; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"
@@ -379,7 +388,7 @@ echo ""
 echo "======================================================================"
 echo "T E M P L A T E  C O N F I G"
 echo "======================================================================"
-qm config 100 | column -t -s' '
+qm config ${VM_ID} | grep -v sshkeys | column -t -s' '
 echo ""
 echo "======================================================================"
 echo "D I S K  S P A C E"
