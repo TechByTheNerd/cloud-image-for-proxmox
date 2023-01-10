@@ -11,6 +11,8 @@ The concept is that you can either:
 
 This second option is what these scripts are about. They go out and download the cloud image for the operating system, and then create a ProxMox template VM that you can clone to create new VM's.
 
+> ![](./proxmox-templates.png)
+
 This started off with being for Ubuntu-only. In January 2023 this repository was renamed, and support for other operating systems were added, since the process is almost identical for other distributions.
 
 ## Features
