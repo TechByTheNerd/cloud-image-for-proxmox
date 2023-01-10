@@ -242,7 +242,7 @@ fi
 
 setStatus "STEP 2: Create a virtual machine" "*"
 if qm create ${VM_ID} --memory ${MEM_SIZE} --name centos-cloud-${CENTOS_VERSION} \
-    --net0 virtio,bridge=vmbr0 --tags cloud-image,centos,centos-${CENTOS_VERSION} \
+    --net0 virtio,bridge=vmbr0 --tags centos,centos-${CENTOS_VERSION},cloud-image \
     --cpu cputype=host ; then
     setStatus " - Success." "s"
     setStatus " - NOTE: CentOS 9 and later need the ProxMox CPU type to be 'host', else kernel panic."

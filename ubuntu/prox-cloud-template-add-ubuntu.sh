@@ -244,7 +244,7 @@ fi
 
 setStatus "STEP 2: Create a virtual machine" "*"
 if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} \
-    --net0 virtio,bridge=vmbr0 --tags cloud-image,ubuntu,ubuntu-${UBUNTU_VERSION},ubuntu-${UBUNTU_DISTRO} ; then
+    --net0 virtio,bridge=vmbr0 --tags ubuntu,ubuntu-${UBUNTU_VERSION},ubuntu-${UBUNTU_DISTRO},cloud-image ; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"
