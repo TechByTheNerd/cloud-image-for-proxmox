@@ -32,8 +32,8 @@ For example, with CentOS, in 8 Stream the SHA256 hashes are in a CHECKSUMS file 
 
 For specific Linux distributions, see the specific folders:
 
-- **[Ubuntu 18.04-22.04](./ubuntu/)** - 16.04 is out of support, so has been dropped here.
-- **[CentOS 8-Stream, and 9-Stream only](./centos/)** - v7 doesn't seem to have cloud image support, and everyone says not to use 8-Stream, but it is supported, so support is included here.
+- **<img src="./ubuntu/logo.png" height="15" /> [Ubuntu 18.04-22.04](./ubuntu/)** - 16.04 is out of support, so has been dropped here.
+- **<img src="./centos/logo.png" height="15" /> [CentOS 8-Stream, and 9-Stream only](./centos/)** - v7 doesn't seem to have cloud image support, and everyone says not to use 8-Stream, but it is supported, so support is included here.
 
 ## More Information
 
