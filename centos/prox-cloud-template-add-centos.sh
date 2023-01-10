@@ -21,7 +21,7 @@ White='\033[1;37m'
 NC='\033[0m' # No Color
 
 Name='ProxMox / CentOS Cloud Init Image Creation Utility (PUCIICU)'
-Version='v1.0.0-alpha.10'
+Version='v1.0.0-alpha.11'
 
 echo -e "${LightPurple}$Name $Version${NC}"
 echo ""
@@ -198,8 +198,8 @@ do
 
     setStatus "Downloading SHA256 sums from CentOS (${HASH_URL}${HASH_FILE})..." "*"
     if wget -q -N ${HASH_URL}${HASH_FILE} --output-document=${IMAGE_FILE}.SHA256SUM ; then
-        setStatus " - Extracting SHA256 hash from CentOS (${HASH_FILE})..." "*"
-        SHA256_HASH_FROMINET=`grep "SHA256 (${IMAGE_FILE}" ./${HASH_FILE} | cut -d '=' -f2 | xargs`
+        setStatus " - Extracting SHA256 hash from CentOS (${IMAGE_FILE}.SHA256SUM)..." "*"
+        SHA256_HASH_FROMINET=`grep "SHA256 (${IMAGE_FILE}" ./${IMAGE_FILE}.SHA256SUM | cut -d '=' -f2 | xargs`
         setStatus " - Done: $SHA256_HASH_FROMINET" "s"
     else
         setStatus " - Download of SHA256 hashes failed." "f"
