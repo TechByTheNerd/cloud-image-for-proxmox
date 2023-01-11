@@ -12,8 +12,9 @@ while [[ $INDEX -lt 6 ]]
 do
 	((INDEX++))
 	echo "[*] Pushing cloud image scripts to: pmvm${INDEX}.$DOMAIN"
-	ssh root@pmvm${INDEX}.$DOMAIN 'mkdir -p /root/cloud-init/centos/ ; mkdir -p /root/cloud-init/ubuntu/'
+	ssh root@pmvm${INDEX}.$DOMAIN 'mkdir -p /root/cloud-init/centos/ ; mkdir -p /root/cloud-init/ubuntu/ ; mkdir -p /root/cloud-init/opensuse/'
 	
+	### CENTOS ###
 	scp ./centos/prox-cloud-template-add-centos.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/centos/
 	
 	if [ ! -f ./centos/rebuild-centos-templates.sh ]; then
@@ -22,6 +23,7 @@ do
 		scp ./centos/rebuild-centos-templates.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/centos/
 	fi
 	
+	### UBUNTU ###
 	scp ./ubuntu/prox-cloud-template-add-ubuntu.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/ubuntu/
 	
 	if [ ! -f ./ubuntu/rebuild-ubuntu-templates.sh ]; then
@@ -29,7 +31,17 @@ do
 	else
 		scp ./ubuntu/rebuild-ubuntu-templates.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/ubuntu/
 	fi
+
+	### OPENSUSE ###
+	scp ./opensuse/prox-cloud-template-add-opensuse.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/opensuse/
 	
+	if [ ! -f ./opensuse/rebuild-opensuse-templates.sh ]; then
+	    echo "[-] The file rebuild-opensuse-templates.sh does not exist. Consider copying the _rebuild-opensuse-templates.sh template and configuring for your needs."
+	else
+		scp ./opensuse/rebuild-opensuse-templates.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/opensuse/
+	fi
+
+
 	scp ./rebuild-all-templates.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/
 done
 
