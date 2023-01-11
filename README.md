@@ -37,6 +37,7 @@ For specific Linux distributions, see the specific folders:
 - **<img src="./ubuntu/logo.png" height="15" /> [Ubuntu 18.04-22.04](./ubuntu/)** - 16.04 is out of support, so has been dropped here.
 - **<img src="./centos/logo.png" height="15" /> [CentOS 8-Stream, and 9-Stream only](./centos/)** - v7 doesn't seem to have cloud image support, and everyone says not to use 8-Stream, but it is supported, so support is included here.
 - **<img src="./opensuse/logo.png" height="15" /> [openSUSE Leap 15.x](./opensuse/)** - 15.2 and later supported.
+- **<img src="./debian/logo.png" height="15" /> [Debian](./debian/)** - Buster 10 and Bullseye 11 and later supported.
 
 ## More Information
 

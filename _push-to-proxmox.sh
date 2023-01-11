@@ -12,7 +12,9 @@ while [[ $INDEX -lt 6 ]]
 do
 	((INDEX++))
 	echo "[*] Pushing cloud image scripts to: pmvm${INDEX}.$DOMAIN"
-	ssh root@pmvm${INDEX}.$DOMAIN 'mkdir -p /root/cloud-init/centos/ ; mkdir -p /root/cloud-init/ubuntu/ ; mkdir -p /root/cloud-init/opensuse/'
+	
+	echo "    - Creating directory structures on destination..."
+	ssh root@pmvm${INDEX}.$DOMAIN 'mkdir -p /root/cloud-init/centos/ ; mkdir -p /root/cloud-init/ubuntu/ ; mkdir -p /root/cloud-init/opensuse/ ; mkdir -p /root/cloud-init/debian/'
 	
 	### CENTOS ###
 	scp ./centos/prox-cloud-template-add-centos.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/centos/
@@ -41,6 +43,14 @@ do
 		scp ./opensuse/rebuild-opensuse-templates.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/opensuse/
 	fi
 
+	### DEBIAN ###
+	scp ./debian/prox-cloud-template-add-debian.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/debian/
+	
+	if [ ! -f ./debian/rebuild-debian-templates.sh ]; then
+	    echo "[-] The file rebuild-debian-templates.sh does not exist. Consider copying the _rebuild-debian-templates.sh template and configuring for your needs."
+	else
+		scp ./debian/rebuild-debian-templates.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/debian/
+	fi
 
 	scp ./rebuild-all-templates.sh root@pmvm${INDEX}.$DOMAIN:/root/cloud-init/
 done
