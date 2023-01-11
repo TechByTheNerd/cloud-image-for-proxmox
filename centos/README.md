@@ -18,13 +18,13 @@ Below are what these values are:
 
 <dl>
   <dt><code>id</code></dt>
-  <dd>This is the ProxMox number ID you want to label this template. I'm using higher numbers and use this for metadata. For example an <code>id</code> of <code>282004</code> is ProxMox server 2, 8 is an arbitrary number for Ubuntu, and 2004 represents the <code>20.04 LTS</code> release. You can use whatever you want, but it needs to be an integer.</dd>
+  <dd>This is the ProxMox number ID you want to label this template. I'm using higher numbers and use this for metadata. For example an <code>id</code> of <code>279000</code> is ProxMox server 2, 7 is an arbitrary number for CentOS, and 9000 represents the <code>v9</code> Stream release, without any minor version. You can use whatever you want, but it needs to be an integer.</dd>
 
   <dt><code>storage</code></dt>
   <dd>This is the name of the ProxMox storage device where you want to store the template. This might be<code>Local-LVM</code>or any mounted storage you have available on the same ProxMox server.</dd>
 
   <dt><code>version</code></dt>
-  <dd>This is the numeric version of the Ubuntu version (e.g. 8-stream, 9-stream, etc). <br><br><strong>NOTE</strong>: As of this writing only <code>8-stream</code> and <code>9-stream</code> are supported options for the <code>version</code> argument. This is based mostly on the directory structure of where the source files are, <a href="https://cloud.centos.org/centos/9-stream/x86_64/images/" target="_blank">here</a>.</dd>
+  <dd>This is the numeric version of the CentOS version (e.g. 8-stream, 9-stream, etc). <br><br><strong>NOTE</strong>: As of this writing only <code>8-stream</code> and <code>9-stream</code> are supported options for the <code>version</code> argument. This is based mostly on the directory structure of where the source files are, <a href="https://cloud.centos.org/centos/9-stream/x86_64/images/" target="_blank">here</a>.</dd>
 
   <dt><code>user</code></dt>
   <dd>This is the name of the non-root, default user who will have <code>sudo</code> privilege.</dd>
@@ -44,9 +44,9 @@ Below are what these values are:
 
 Below is a breakdown of what this script does, and some of the nuance:
 
-### STEP 1: Get Ubuntu Cloud image and SHA256 hash
+### STEP 1: Get CentOS Cloud image and SHA256 hash
 
-This step checks to see if the [Ubuntu Cloud Image](https://cloud-images.ubuntu.com/) is downloaded yet. If it is, it downloads the SHA256 hashes, makes a hash for the local file and compares them. If the hashes don't match, the image is downloaded again.
+This step checks to see if the [CentOS Cloud Image](https://cloud-images.ubuntu.com/) is downloaded yet. If it is, it downloads the SHA256 hashes, makes a hash for the local file and compares them. If the hashes don't match, the image is downloaded again.
 
 Once the image is downloaded and the SHA256 hashes match, the script continues. If this fails more than 3 times, the script errors out.
 
@@ -64,7 +64,7 @@ Import the raw disk into ProxMox.
 
 ### STEP 4: Add the new, imported disk to the VM.
 
-This attaches the Ubuntu Cloud image to the VM.
+This attaches the CentOS Cloud image to the VM.
 
 ### STEP 5: Add a CD-ROM.
 
@@ -72,7 +72,7 @@ Adds a CD-ROM.
 
 ### STEP 6: Specify the boot disk.
 
-Makes the Ubuntu image bootable.
+Makes the CentOS image bootable.
 
 ### STEP 7: Add support for VNC and a serial console.
 
@@ -88,7 +88,7 @@ Configures all of the other details such as a description, core count, default u
 
 ### STEP 10: Resize boot disk to ${DISK_SIZE}B
 
-The Ubuntu Cloud Image is just a few gigabytes by default. This expands the `/` mount point, the main disk to 120GB.
+The CentOS Cloud Image is just a few gigabytes by default. This expands the `/` mount point, the main disk to 120GB.
 
 ### STEP 11: Convert VM to a template
 
