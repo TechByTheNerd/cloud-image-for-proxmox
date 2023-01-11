@@ -241,8 +241,10 @@ fi
 
 setStatus "STEP 2: Create a virtual machine" "*"
 if qm create ${VM_ID} --memory ${MEM_SIZE} --name debian-cloud-${DEBIAN_DISTRO_LOWER}-${DEBIAN_VERSION} \
-    --net0 virtio,bridge=vmbr0 --tags debian,debian-${DEBIAN_VERSION},debian-${DEBIAN_DISTRO_LOWER},cloud-image ; then
+    --net0 virtio,bridge=vmbr0 --tags debian,debian-${DEBIAN_VERSION},debian-${DEBIAN_DISTRO_LOWER},cloud-image \
+    --cpu cputype=host ; then
     setStatus " - Success." "s"
+    setStatus " - NOTE: Debian need the ProxMox CPU type to be 'host', else kernel panic."
 else
     setStatus " - Error completing step." "f"
     exit -1
