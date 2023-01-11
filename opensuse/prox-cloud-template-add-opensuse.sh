@@ -234,7 +234,7 @@ else
 fi
 
 setStatus "STEP 1c: Configure VM template with software."
-if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,figlet,neofetch,ufw,fail2ban \
+if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,neofetch \
     --run-command "cat /dev/null > /etc/machine-id"; then
     setStatus " - Successfully installed." "s"
 else
