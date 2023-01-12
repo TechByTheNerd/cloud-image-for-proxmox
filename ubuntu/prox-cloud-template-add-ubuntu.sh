@@ -235,7 +235,7 @@ else
 fi
 
 setStatus "STEP 1c: Configure VM template with software."
-if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,figlet,neofetch,ufw,fail2ban \
+if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,watchdog,figlet,neofetch,ufw,fail2ban \
     --run-command "cat /dev/null > /etc/machine-id"; then
     setStatus " - Successfully installed." "s"
 else
@@ -244,7 +244,8 @@ fi
 
 setStatus "STEP 2: Create a virtual machine" "*"
 if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} \
-    --net0 virtio,bridge=vmbr0 --tags ubuntu,ubuntu-${UBUNTU_VERSION},ubuntu-${UBUNTU_DISTRO},cloud-image ; then
+    --net0 virtio,bridge=vmbr0 --tags ubuntu,ubuntu-${UBUNTU_VERSION},ubuntu-${UBUNTU_DISTRO},cloud-image \
+    --watchdog model=i6300esb,action=reset; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"

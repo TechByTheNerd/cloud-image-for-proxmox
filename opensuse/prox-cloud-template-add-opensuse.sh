@@ -234,7 +234,7 @@ else
 fi
 
 setStatus "STEP 1c: Configure VM template with software."
-if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,neofetch \
+if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,watchdog,neofetch \
     --run-command "cat /dev/null > /etc/machine-id"; then
     setStatus " - Successfully installed." "s"
 else
@@ -243,7 +243,8 @@ fi
 
 setStatus "STEP 2: Create a virtual machine" "*"
 if qm create ${VM_ID} --memory ${MEM_SIZE} --name opensuse-cloud-${OPENSUSE_DISTRO_LOWER}-${OPENSUSE_VERSION} \
-    --net0 virtio,bridge=vmbr0 --tags opensuse,opensuse-${OPENSUSE_VERSION},opensuse-${OPENSUSE_DISTRO_LOWER},cloud-image ; then
+    --net0 virtio,bridge=vmbr0 --tags opensuse,opensuse-${OPENSUSE_VERSION},opensuse-${OPENSUSE_DISTRO_LOWER},cloud-image \
+    --watchdog model=i6300esb,action=reset; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"

@@ -233,7 +233,7 @@ else
 fi
 
 setStatus "STEP 1c: Configure VM template with software."
-if virt-customize -a ./${IMAGE_FILE} --install epel-release,qemu-guest-agent --selinux-relabel \
+if virt-customize -a ./${IMAGE_FILE} --install epel-release,qemu-guest-agent,watchdog --selinux-relabel \
     --run-command "cat /dev/null > /etc/machine-id"; then
     setStatus " - Successfully installed." "s"
 else
@@ -243,7 +243,7 @@ fi
 setStatus "STEP 2: Create a virtual machine" "*"
 if qm create ${VM_ID} --memory ${MEM_SIZE} --name centos-cloud-${CENTOS_VERSION} \
     --net0 virtio,bridge=vmbr0 --tags centos,centos-${CENTOS_VERSION},cloud-image \
-    --cpu cputype=host ; then
+    --cpu cputype=host --watchdog model=i6300esb,action=reset; then
     setStatus " - Success." "s"
     setStatus " - NOTE: CentOS 9 and later need the ProxMox CPU type to be 'host', else kernel panic."
 else

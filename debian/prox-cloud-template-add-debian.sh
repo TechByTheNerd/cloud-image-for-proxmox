@@ -232,7 +232,7 @@ else
 fi
 
 setStatus "STEP 1c: Configure VM template with software."
-if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,figlet,neofetch,ufw,fail2ban \
+if virt-customize -a ./${IMAGE_FILE} --install qemu-guest-agent,watchdog,figlet,neofetch,ufw,fail2ban \
     --run-command "cat /dev/null > /etc/machine-id"; then
     setStatus " - Successfully installed." "s"
 else
@@ -242,7 +242,7 @@ fi
 setStatus "STEP 2: Create a virtual machine" "*"
 if qm create ${VM_ID} --memory ${MEM_SIZE} --name debian-cloud-${DEBIAN_DISTRO_LOWER}-${DEBIAN_VERSION} \
     --net0 virtio,bridge=vmbr0 --tags debian,debian-${DEBIAN_VERSION},debian-${DEBIAN_DISTRO_LOWER},cloud-image \
-    --cpu cputype=host ; then
+    --cpu cputype=host --watchdog model=i6300esb,action=reset; then
     setStatus " - Success." "s"
     setStatus " - NOTE: Debian need the ProxMox CPU type to be 'host', else kernel panic."
 else
