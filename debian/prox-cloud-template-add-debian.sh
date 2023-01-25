@@ -274,6 +274,10 @@ elif [ "$STORAGE_TYPE" = "lvmthin" ]; then
   setStatus " - Storage type 'LVM-Thin' detected."
   IMPORTED_DISKFILE=${STORAGE_NAME}:vm-${VM_ID}-disk-0
   lvremove ${IMPORTED_DISKFILE}
+elif [ "$STORAGE_TYPE" = "rbd" ]; then
+  setStatus " - Storage type 'RBD' detected."
+  IMPORTED_DISKFILE=${STORAGE_NAME}:vm-${VM_ID}-disk-0
+  rm ${IMPORTED_DISKFILE}
 elif [ "$STORAGE_TYPE" = "zfspool" ]; then
   setStatus " - Storage type 'ZFS Pool' detected."
   IMPORTED_DISKFILE=${STORAGE_NAME}/vm-${VM_ID}-disk-0
