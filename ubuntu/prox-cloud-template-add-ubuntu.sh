@@ -97,9 +97,9 @@ else
     IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64.img"
 fi
 
-MEM_SIZE="2048"
-CORES="4"
-DISK_SIZE="120G"
+MEM_SIZE="1024"
+CORES="1"
+DISK_SIZE="20G"
 SSH_KEYS="./keys"
 IMAGE_URL="https://cloud-images.ubuntu.com/${UBUNTU_DISTRO}/current/${IMAGE_FILE}"
 HASH_URL="https://cloud-images.ubuntu.com/${UBUNTU_DISTRO}/current/SHA256SUMS"
