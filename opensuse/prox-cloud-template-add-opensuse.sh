@@ -96,9 +96,9 @@ fi
 
 IMAGE_FILE="openSUSE-${OPENSUSE_DISTRO}-${OPENSUSE_VERSION}.x86_64-NoCloud.qcow2"
 
-MEM_SIZE="2048"
-CORES="4"
-DISK_SIZE="120G"
+MEM_SIZE="1024"
+CORES="1"
+DISK_SIZE="20G"
 SSH_KEYS="./keys"
 IMAGE_URL="https://download.opensuse.org/repositories/Cloud:/Images:/${OPENSUSE_DISTRO}_${OPENSUSE_VERSION}/images/${IMAGE_FILE}"
 HASH_URL="${IMAGE_URL}.sha256"

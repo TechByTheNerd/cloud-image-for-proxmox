@@ -87,16 +87,16 @@ else
 fi
 
 if [[ "${CENTOS_VERSION}" == "8-stream" ]] ; then
-    IMAGE_FILE="CentOS-Stream-GenericCloud-8-20220913.0.x86_64.qcow2"
+    IMAGE_FILE="CentOS-Stream-GenericCloud-8-20230501.0.x86_64.qcow2"
     HASH_FILE="CHECKSUM"
 else
-    IMAGE_FILE="CentOS-Stream-GenericCloud-9-20230103.0.x86_64.qcow2"
+    IMAGE_FILE="CentOS-Stream-GenericCloud-9-20230424.0.x86_64.qcow2"
     HASH_FILE="${IMAGE_FILE}.SHA256SUM"
 fi
 
-MEM_SIZE="2048"
-CORES="4"
-DISK_SIZE="120G"
+MEM_SIZE="1048"
+CORES="1"
+DISK_SIZE="20G"
 SSH_KEYS="./keys"
 IMAGE_URL="https://cloud.centos.org/centos/${CENTOS_VERSION}/x86_64/images/${IMAGE_FILE}"
 HASH_URL="https://cloud.centos.org/centos/${CENTOS_VERSION}/x86_64/images/"
