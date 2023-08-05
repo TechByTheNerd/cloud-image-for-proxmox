@@ -281,7 +281,7 @@ elif [ "$STORAGE_TYPE" = "rbd" ]; then
   rm ${IMPORTED_DISKFILE}
 elif [ "$STORAGE_TYPE" = "zfspool" ]; then
   setStatus " - Storage type 'ZFS Pool' detected."
-  IMPORTED_DISKFILE=${STORAGE_NAME}/vm-${VM_ID}-disk-0
+  IMPORTED_DISKFILE=${STORAGE_NAME}:vm-${VM_ID}-disk-0
   zfs destroy ${IMPORTED_DISKFILE}
 else
   setStatus " - Storage type not detected. Defaulting to treating as Directory storage."
