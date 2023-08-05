@@ -12,6 +12,9 @@ LAUNCHPAD_USER=jdoe
 HOSTNAME=$(echo `hostname` | cut -d'.' -f1)
 HOST_DIGIT=${HOSTNAME: -1}
 
+echo "[*] Rebuilding 'Bullseye 12'..."
+./prox-cloud-template-add-debian.sh ${HOST_DIGIT}08000 local-zfs Bookworm 12 $ACCOUNT_NAME $PASSWORD $DOMAIN $LAUNCHPAD_USER
+
 echo "[*] Rebuilding 'Bullseye 11'..."
 ./prox-cloud-template-add-debian.sh ${HOST_DIGIT}08000 SSD-0${HOST_DIGIT}A Bullseye 11 $ACCOUNT_NAME $PASSWORD $DOMAIN $LAUNCHPAD_USER
 
