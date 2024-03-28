@@ -29,7 +29,7 @@ echo ""
 if [[ "$1" == "" || $1 == "?" || $1 == "/?" || $1 == "--help" ]];
 then
     echo -e "USAGE: sudo $0 [id] [storage] [distro] [version] [user] [password] \
-        [searchdomain] [launchpadid]\n\n\tsudo $0 4000 SSD-01A leap 15.4 sysadmin \
+        [searchdomain] [sshkeyid]\n\n\tsudo $0 4000 SSD-01A leap 15.4 sysadmin \
         G00dPazz22 intranet.example.com jdoe\n"
     exit -2
 fi
@@ -49,7 +49,12 @@ else
     exit -1
 fi
 if [ ! -z "$2" ] ; then
-    STORAGE_NAME="$2"
+    if pvesm status | grep -q "$2" ; then
+        STORAGE_NAME="$2"
+    else
+        echo -e "ERROR: Storage device '"$2"' does not exist."
+        exit -1
+    fi
 else
     echo -e "ERROR: [storage] missing. (ex.: SSD-01A)\n"
     exit -1
@@ -86,9 +91,9 @@ else
     exit -1
 fi
 if [ ! -z "$8" ] ; then
-    LAUNCHPAD_ID="$8"
+    SSH_KEY_ID="$8"
 else
-    echo -e "ERROR: [launchpadid] missing. (ex.: jdoe)\n"
+    echo -e "ERROR: [sshkeyid] missing. (ex.: jdoe)\n"
     exit -1
 fi
 
@@ -116,7 +121,7 @@ echo "HASH_FILE............: $HASH_FILE"
 echo "STD_USER_NAME........: $STD_USER_NAME"
 echo "STD_USER_PASSWORD....: $STD_USER_PASSWORD"
 echo "SEARCH_DOMAIN........: $SEARCH_DOMAIN"
-echo "LAUNCHPAD_ID.........: $LAUNCHPAD_ID"
+echo "SSH_KEY_ID...........: $SSH_KEY_ID"
 echo ""
 
 function setStatus(){
@@ -322,8 +327,10 @@ fi
 #    exit -1
 #fi
 
-setStatus "STEP 8: Retrieve SSH keys from LaunchPad for: ${LAUNCHPAD_ID}..."
-if wget https://launchpad.net/~${LAUNCHPAD_ID}/+sshkeys -O ./keys ; then
+setStatus "STEP 8: Retrieve SSH keys from LaunchPad for: ${SSH_KEY_ID}..."
+if wget https://launchpad.net/~${SSH_KEY_ID}/+sshkeys -O ./keys ; then
+    setStatus " - Success." "s"
+elif wget https://github.com/${SSH_KEY_ID}.keys -O ./keys ; then
     setStatus " - Success." "s"
 else
     setStatus " - Error completing step." "f"
