@@ -7,7 +7,7 @@ If you haven't already, see the [README](../README.md) in the root of this repos
 In short, this is what you need to run this script:
 
 ```bash
-sudo ./prox-cloud-template-add.sh [id] [storage] [version] [user] [password] [searchdomain] [launchpadid]
+sudo ./prox-cloud-template-add.sh [id] [storage] [version] [user] [password] [searchdomain] [sshkeyid]
 ```
 or as an example:
 ```bash
@@ -16,28 +16,16 @@ sudo ./prox-cloud-template-add.sh 4000 SSD-01A 9-stream sysadmin G00dPazz22 intr
 
 Below are what these values are:
 
-<dl>
-  <dt><code>id</code></dt>
-  <dd>This is the ProxMox number ID you want to label this template. I'm using higher numbers and use this for metadata. For example an <code>id</code> of <code>279000</code> is ProxMox server 2, 7 is an arbitrary number for CentOS, and 9000 represents the <code>v9</code> Stream release, without any minor version. You can use whatever you want, but it needs to be an integer.</dd>
-
-  <dt><code>storage</code></dt>
-  <dd>This is the name of the ProxMox storage device where you want to store the template. This might be<code>Local-LVM</code>or any mounted storage you have available on the same ProxMox server.</dd>
-
-  <dt><code>version</code></dt>
-  <dd>This is the numeric version of the CentOS version (e.g. 8-stream, 9-stream, etc). <br><br><strong>NOTE</strong>: As of this writing only <code>8-stream</code> and <code>9-stream</code> are supported options for the <code>version</code> argument. This is based mostly on the directory structure of where the source files are, <a href="https://cloud.centos.org/centos/9-stream/x86_64/images/" target="_blank">here</a>.</dd>
-
-  <dt><code>user</code></dt>
-  <dd>This is the name of the non-root, default user who will have <code>sudo</code> privilege.</dd>
-
-  <dt><code>password</code></dt>
-  <dd>This is the password for <code>user</code>, in plain-text.</dd>
-
-  <dt><code>searchdomain</code></dt>
-  <dd>This is a network setting. When you search for a server name, if it can't be found, the network stack can add-on different DNS domain suffixes to try to find the server. For example you might know "server123", but it's fully-qualified-domain-name is "server123.lab.example.com". In this case, if you set this to "lab.example.com" it will add this onto DNS queries to help file machines that you try to access.</dd>
-
-  <dt><code>launchpadid</code></dt>
-  <dd>This is the userid of the account to lookup, to scrape the SSH public keys to add to the <code>~/.ssh/authorized_keys</code> file for <code>user</code>. This is a common/consistent place to store your public keys. Navigate to www.launchpad.net to create an account and upload the SSH keys from the various workstation(s) you might need to connect from.</dd>
-</dl>
+- `id` This is the ProxMox number ID you want to label this template. I'm using higher numbers and use this for metadata. For example an `id` of `279000` is ProxMox server 2, 7 is an arbitrary number for CentOS, and 9000 represents the `v9` Stream release, without any minor version. You can use whatever you want, but it needs to be an integer.
+- `storage` This is the name of the ProxMox storage device where you want to store the template. This might be `Local-LVM` or any mounted storage you have available on the same ProxMox server.
+- `version` This is the numeric version of the CentOS version (e.g. 8-stream, 9-stream, etc).
+  - **NOTE**: As of this writing only `8-stream` and `9-stream` are supported options for the `version` argument. This is based mostly on the directory structure of where the source files are, [here](https://cloud.centos.org/centos/9-stream/x86_64/images/).
+- `user` This is the name of the non-root, default user who will have `sudo` privilege.
+- `password` This is the password for `user`, in plain-text.
+- `searchdomain` This is a network setting. When you search for a server name, if it can't be found, the network stack can add-on different DNS domain suffixes to try to find the server. For example you might know "server123", but it's fully-qualified-domain-name is "server123.lab.example.com". In this case, if you set this to "lab.example.com" it will add this onto DNS queries to help file machines that you try to access.
+- `sshkeyid` This is the userid of the account to lookup, to scrape the SSH public keys to add to the `~/.ssh/authorized_keys` file for `user`. This is a common/consistent place to store your public keys. There are two places where this script can pull down your SSH keys:
+  - 1) **LaunchPad** - Navigate to https://www.launchpad.net to create an account and upload the SSH keys from the various workstation(s) you might need to connect from. The download will be from: `https://launchpad.net/~[[USERNAME]]`
+  - 2) **GitHub** - Navigate to https://github.com/settings/keys and add your SSH keys. The download will be from: `https://github.com/[[USERNAME]].keys`
 
 
 ## What does it do?
