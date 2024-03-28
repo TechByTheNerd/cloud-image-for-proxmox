@@ -22,7 +22,9 @@ These scripts will configure one cloud image at a time that has at least some ba
 - Hostname and DNS domain search name.
 - Static IP address or DHCP.
 - Non-root account that has `sudo` privilege.
-- Your SSH keys added to `~/.ssh/authorized_keys` from www.launchpad.net (a free, public place to store your SSH public keys)
+- Your SSH keys added to `~/.ssh/authorized_keys` from:
+  - `www.github.com/{{USERNAME}}.keys` - your public keys registered on GitHub
+  - `www.launchpad.net/~{{USERNAME}}` - your public keys registered on Ubuntu's site
 
 So, it's just a few notches more-configured than if you installed the Ubuntu OS from scratch. These cloud images are significantly smaller and stand up very quickly. You clone your new VM, it's up and available in well under a minute, and you can immediately SSH in with your SSH keys. This is very similar to the Big Box cloud providers.
 
