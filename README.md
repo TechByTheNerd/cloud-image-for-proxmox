@@ -36,10 +36,12 @@ For example, with CentOS, in 8 Stream the SHA256 hashes are in a CHECKSUMS file 
 
 For specific Linux distributions, see the specific folders:
 
-- **<img src="./ubuntu/logo.png" height="15" /> [Ubuntu 18.04-22.04](./ubuntu/)** - 16.04 is out of support, so has been dropped here.
-- **<img src="./centos/logo.png" height="15" /> [CentOS 8-Stream, and 9-Stream only](./centos/)** - v7 doesn't seem to have cloud image support, and everyone says not to use 8-Stream, but it is supported, so support is included here.
-- **<img src="./opensuse/logo.png" height="15" /> [openSUSE Leap 15.x](./opensuse/)** - 15.2 and later supported.
-- **<img src="./debian/logo.png" height="15" /> [Debian](./debian/)** - Buster 10 and Bullseye 11 and later supported.
+- **<img src="./almalinux/logo.png" width="22" valign="middle"/> [AlmaLinux 8-9](./almalinux/)** - v8 and later supported.
+- **<img src="./centos/logo.png" width="22" valign="middle"/> [CentOS 8-Stream, and 9-Stream only](./centos/)** - v8 Stream and later supported.
+- **<img src="./debian/logo.png" width="22" valign="middle"/> [Debian](./debian/)** - Buster 10 and later supported.
+- **<img src="./opensuse/logo.png" width="22" valign="middle"/> [openSUSE Leap 15.x](./opensuse/)** - 15.2 and later supported.
+- **<img src="./rockylinux/logo.png" width="22" valign="middle"/> [Rocky Linux 8-9](./rockylinux/)** - v8 and later supported.
+- **<img src="./ubuntu/logo.png" width="22" valign="middle"/> [Ubuntu 18.04-22.04](./ubuntu/)** - 18.04 LTS and later supported.
 
 ## More Information
 
