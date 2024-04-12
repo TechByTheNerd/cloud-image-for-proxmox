@@ -92,5 +92,7 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git
 
+*.qcow2*
+
 rebuild-*-templates.sh
 push-to-proxmox.sh
