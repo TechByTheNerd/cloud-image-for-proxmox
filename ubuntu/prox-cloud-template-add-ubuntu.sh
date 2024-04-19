@@ -323,12 +323,12 @@ fi
 
 # I don't think this is needed? Still evaluating.
 #setStatus "STEP 7: Add support for VNC and a serial console."
-#if qm set ${VM_ID} --serial0 socket --vga serial0 ; then
-#    setStatus " - Success." "s"
-#else
-#    setStatus " - Error completing step." "f"
-#    exit -1
-#fi
+if qm set ${VM_ID} --serial0 socket --vga serial0 ; then
+   setStatus " - Success." "s"
+else
+   setStatus " - Error completing step." "f"
+   exit -1
+fi
 
 setStatus "STEP 8: Retrieve SSH keys from LaunchPad for: ${SSH_KEY_ID}..."
 if wget https://launchpad.net/~${SSH_KEY_ID}/+sshkeys -O ./keys ; then
