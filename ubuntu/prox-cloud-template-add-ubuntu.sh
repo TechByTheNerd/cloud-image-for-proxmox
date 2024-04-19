@@ -98,6 +98,8 @@ fi
 
 if [[ "${UBUNTU_VERSION}" == "16.04" ]] ; then
     IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk1.img"
+elif [[ "${UBUNTU_VERSION}" == "22.04" ]] ; then
+    IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk-kvm.img"
 else
     IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64.img"
 fi
