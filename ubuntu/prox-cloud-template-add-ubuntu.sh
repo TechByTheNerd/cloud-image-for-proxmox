@@ -97,9 +97,10 @@ else
 fi
 
 if [[ "$9" = "minimal" ]]; then
-    IMAGE_URL=https://cloud-images.ubuntu.com/minimal/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-minimal-cloudimg-amd64.img
-    HASH_URL=https://cloud-images.ubuntu.com/minimal/releases/${UBUNTU_VERSION}/release/SHA256SUMS
-    TEMPLATE_NAME=ubuntu-cloud-${UBUNTU_DISTRO}--${UBUNTU_VERSION}-minimal
+    IMAGE_FILE=ubuntu-${UBUNTU_VERSION}-minimal-cloudimg-amd64.img
+    IMAGE_URL=https://cloud-images.ubuntu.com/minimal/releases/${UBUNTU_DISTRO}/release/${IMAGE_FILE}
+    HASH_URL=https://cloud-images.ubuntu.com/minimal/releases/${UBUNTU_DISTRO}/release/SHA256SUMS
+    TEMPLATE_NAME=ubuntu-cloud-${UBUNTU_DISTRO}-${UBUNTU_VERSION}-minimal
 else
     if [[ "${UBUNTU_VERSION}" == "16.04" ]] ; then
         IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk1.img"
