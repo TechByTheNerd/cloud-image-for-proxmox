@@ -96,20 +96,28 @@ else
     exit -1
 fi
 
-if [[ "${UBUNTU_VERSION}" == "16.04" ]] ; then
-    IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk1.img"
-elif [[ "${UBUNTU_VERSION}" == "22.04" ]] ; then
-    IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk-kvm.img"
+if [[ "$9" = "minimal" ]]; then
+    IMAGE_URL=https://cloud-images.ubuntu.com/minimal/releases/${UBUNTU_VERSION}/release/ubuntu-${UBUNTU_VERSION}-minimal-cloudimg-amd64.img
+    HASH_URL=https://cloud-images.ubuntu.com/minimal/releases/${UBUNTU_VERSION}/release/SHA256SUMS
+    TEMPLATE_NAME=ubuntu-cloud-${UBUNTU_DISTRO}--${UBUNTU_VERSION}-minimal
 else
-    IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64.img"
+    if [[ "${UBUNTU_VERSION}" == "16.04" ]] ; then
+        IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk1.img"
+    elif [[ "${UBUNTU_VERSION}" == "22.04" ]] ; then
+        IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk-kvm.img"
+    else
+        IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64.img"
+    fi
+    IMAGE_URL="https://cloud-images.ubuntu.com/${UBUNTU_DISTRO}/current/${IMAGE_FILE}"
+    HASH_URL="https://cloud-images.ubuntu.com/${UBUNTU_DISTRO}/current/SHA256SUMS"
+    TEMPLATE_NAME=ubuntu-cloud-${UBUNTU_DISTRO}-${UBUNTU_VERSION}
 fi
 
 MEM_SIZE="1024"
 CORES="1"
 DISK_SIZE="20G"
 SSH_KEYS="./keys"
-IMAGE_URL="https://cloud-images.ubuntu.com/${UBUNTU_DISTRO}/current/${IMAGE_FILE}"
-HASH_URL="https://cloud-images.ubuntu.com/${UBUNTU_DISTRO}/current/SHA256SUMS"
+
 HASH_FILE="${UBUNTU_DISTRO}_SHA256SUMS"
 
 echo ""
@@ -125,6 +133,7 @@ echo "STD_USER_NAME........: $STD_USER_NAME"
 echo "STD_USER_PASSWORD....: $STD_USER_PASSWORD"
 echo "SEARCH_DOMAIN........: $SEARCH_DOMAIN"
 echo "SSH_KEY_ID...........: $SSH_KEY_ID"
+echo "TEMPLATE_NAME........: $TEMPLATE_NAME"
 echo ""
 
 function setStatus(){
@@ -250,7 +259,7 @@ else
 fi
 
 setStatus "STEP 2: Create a virtual machine" "*"
-if qm create ${VM_ID} --memory ${MEM_SIZE} --name ubuntu-cloud-${UBUNTU_DISTRO} \
+if qm create ${VM_ID} --memory ${MEM_SIZE} --name $TEMPLATE_NAME \
     --net0 virtio,bridge=vmbr0 --tags ubuntu,ubuntu-${UBUNTU_VERSION},ubuntu-${UBUNTU_DISTRO},cloud-image \
     --watchdog model=i6300esb,action=reset; then
     setStatus " - Success." "s"
