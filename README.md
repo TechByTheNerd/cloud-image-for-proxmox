@@ -35,13 +35,14 @@ As support has grown for other operating systems, each OS has it's own folders w
 For example, with CentOS, in 8 Stream the SHA256 hashes are in a CHECKSUMS file with one line per filename, with a colon, and then then the hash. In 9 Stream and higher, there is a dedicated `<qcow-filename>.sha256sum` filename that has just the SHA256 hash for that particular file. There is this kind of branching logic and nuance for different versions within a distro. If you put this all into one script, it would probably be unweildly and difficult to maintain. If you disagree, feel free to use these scripts and run with it however you'd like!
 
 For specific Linux distributions, see the specific folders:
-
-- **<img src="./almalinux/logo.png" width="22" valign="middle"/> [AlmaLinux 8-9](./almalinux/)** - v8 and later supported.
-- **<img src="./centos/logo.png" width="22" valign="middle"/> [CentOS 8-Stream, and 9-Stream only](./centos/)** - v8 Stream and later supported.
-- **<img src="./debian/logo.png" width="22" valign="middle"/> [Debian](./debian/)** - Buster 10 and later supported.
-- **<img src="./opensuse/logo.png" width="22" valign="middle"/> [openSUSE Leap 15.x](./opensuse/)** - 15.2 and later supported.
-- **<img src="./rockylinux/logo.png" width="22" valign="middle"/> [Rocky Linux 8-9](./rockylinux/)** - v8 and later supported.
-- **<img src="./ubuntu/logo.png" width="22" valign="middle"/> [Ubuntu 18.04-22.04](./ubuntu/)** - 18.04 LTS and later supported.
+| Linux Distro | Support |
+| -- | -- |
+| **<img src="./almalinux/logo.png" width="22" valign="middle"/> [AlmaLinux 8-9](./almalinux/)** | v8 and later |
+| **<img src="./centos/logo.png" width="22" valign="middle"/> [CentOS 8-Stream, and 9-Stream only](./centos/)** | v8 Stream and later |
+| **<img src="./debian/logo.png" width="22" valign="middle"/> [Debian](./debian/)** | Buster 10 and later |
+| **<img src="./opensuse/logo.png" width="22" valign="middle"/> [openSUSE Leap 15.x](./opensuse/)** | 15.2 and later |
+| **<img src="./rockylinux/logo.png" width="22" valign="middle"/> [Rocky Linux 8-9](./rockylinux/)** | v8 and later |
+| **<img src="./ubuntu/logo.png" width="22" valign="middle"/> [Ubuntu 18.04-22.04](./ubuntu/)** | 18.04 LTS and later |
 
 ## More Information
 
