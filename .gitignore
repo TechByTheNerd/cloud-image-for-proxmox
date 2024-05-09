@@ -102,3 +102,4 @@ out.log
 *.img*
 *.qcow*
 *SHA*
+keys
