@@ -24,9 +24,10 @@ Below are what these values are:
 - `user` is the name of the non-root, default user who will have `sudo` privilege.
 - `password` is the password for `user`, in plain-text.
 - `searchdomain` is a network setting. When you search for a server name, if it can't be found, the network stack can add-on different DNS domain suffixes to try to find the server. For example you might know "server123", but it's fully-qualified-domain-name is "server123.lab.example.com". In this case, if you set this to "lab.example.com" it will add this onto DNS queries to help file machines that you try to access.
-- `sshkeyid` This is the userid of the account to lookup, to scrape the SSH public keys to add to the `~/.ssh/authorized_keys` file for `user`. This is a common/consistent place to store your public keys. There are two places where this script can pull down your SSH keys:
-  - 1) **LaunchPad** - Navigate to https://www.launchpad.net to create an account and upload the SSH keys from the various workstation(s) you might need to connect from. The download will be from: `https://launchpad.net/~[[sshkeyid]]`
-  - 2) **GitHub** - Navigate to https://github.com/settings/keys and add your SSH keys. The download will be from: `https://github.com/[[sshkeyid]].keys`
+- `sshkeyid` This is the userid of the account to lookup, to scrape the SSH public keys to add to the `~/.ssh/authorized_keys` file for `user`. This is a common/consistent place to store your public keys. Or, this can be a file on the file system. So, there are three places where this script can pull down your SSH keys:
+  - 1) **File System** - Point to a valid path that you have access to, in any tradition format (e.g. "~/ssh/authorized_keys", "keys.txt", "/home/user/keys", etc.)
+  - 2) **LaunchPad** - Navigate to https://www.launchpad.net to create an account and upload the SSH keys from the various workstation(s) you might need to connect from. The download will be from: `https://launchpad.net/~[[sshkeyid]]`
+  - 3) **GitHub** - Navigate to https://github.com/settings/keys and add your SSH keys. The download will be from: `https://github.com/[[sshkeyid]].keys`
 
 ## What does it do?
 

@@ -23,6 +23,7 @@ These scripts will configure one cloud image at a time that has at least some ba
 - Static IP address or DHCP.
 - Non-root account that has `sudo` privilege.
 - Your SSH keys added to `~/.ssh/authorized_keys` from:
+  - The local file system, from a file spec that you provide.
   - `www.github.com/{{sshkeyid}}.keys` - your public keys registered on GitHub
   - `www.launchpad.net/~{{sshkeyid}}` - your public keys registered on Ubuntu's site
 

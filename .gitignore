@@ -94,5 +94,11 @@ $RECYCLE.BIN/
 
 *.qcow2*
 
+rebuild-*_templates.sh
 rebuild-*-templates.sh
 push-to-proxmox.sh
+sshkeys.txt
+out.log
+*.img*
+*.qcow*
+*SHA*

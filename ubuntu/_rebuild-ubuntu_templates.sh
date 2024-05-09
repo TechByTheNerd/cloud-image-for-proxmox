@@ -13,7 +13,7 @@ HOSTNAME=$(echo `hostname` | cut -d'.' -f1)
 HOST_DIGIT=${HOSTNAME: -1}
 
 echo "[*] Rebuilding 'Ubuntu 24.04 (noble)'..."
-./prox-cloud-template-add-ubuntu.sh ${HOST_DIGIT}02404 SSD-0${HOST_DIGIT}A noble 22.04 $ACCOUNT_NAME $PASSWORD $DOMAIN $SSH_KEY_ID
+./prox-cloud-template-add-ubuntu.sh ${HOST_DIGIT}02404 SSD-0${HOST_DIGIT}A noble 24.04 $ACCOUNT_NAME $PASSWORD $DOMAIN $SSH_KEY_ID
 
 echo "[*] Rebuilding 'Ubuntu 22.04 (jammy)'..."
 ./prox-cloud-template-add-ubuntu.sh ${HOST_DIGIT}02204 SSD-0${HOST_DIGIT}A jammy 22.04 $ACCOUNT_NAME $PASSWORD $DOMAIN $SSH_KEY_ID

@@ -20,11 +20,37 @@ LightGray='\033[0;37m'
 White='\033[1;37m'
 NC='\033[0m' # No Color
 
-Name='ProxMox / Ubuntu Cloud Init Image Creation Utility (PUCIICU)'
-Version='v1.0.0-alpha.4'
+Name='ProxMox Cloud Init Creator (Ubuntu)'
+Version='v1.0.0'
 
 echo -e "${LightPurple}$Name $Version${NC}"
 echo ""
+
+function setStatus(){
+
+    description=$1
+    severity=$2
+
+    logger "$Name $Version: [${severity}] $description"
+
+
+    case "$severity" in
+        s)
+            echo -e "[${LightGreen}+${NC}] ${LightGreen}${description}${NC}"
+        ;;
+        f)
+            echo -e "[${Red}-${NC}] ${LightRed}${description}${NC}"
+        ;;
+        q)
+            echo -e "[${LightPurple}?${NC}] ${LightPurple}${description}${NC}"
+        ;;
+        *)
+            echo -e "[${LightCyan}*${NC}] ${LightCyan}${description}${NC}"
+        ;;
+    esac
+
+    [[ $WithVoice -eq 1 ]] && echo -e ${description} | espeak
+}
 
 if [[ "$1" == "" || $1 == "?" || $1 == "/?" || $1 == "--help" ]];
 then
@@ -96,6 +122,23 @@ else
     exit -1
 fi
 
+setStatus "Checking if the 'libguestfs-tools' package is installed" "*"
+if dpkg -s "libguestfs-tools" >/dev/null 2>&1; then
+    setStatus "Package 'libguestfs-tools' is already installed." "s"
+else
+    setStatus "    - Package 'libguestfs-tools' is not installed. Installing now..." "*"
+    sudo apt-get update
+    sudo apt-get install -y "libguestfs-tools"
+
+    setStatus "    - Checking if the package was successfully installed..." "*"
+    if dpkg -s "libguestfs-tools" >/dev/null 2>&1; then
+        setStatus "Package 'libguestfs-tools' has been successfully installed." "s"
+    else
+        setStatus "There was an error installing 'libguestfs-tools'." "f"
+        exit 1
+    fi
+fi
+
 if [[ "${UBUNTU_VERSION}" == "16.04" ]] ; then
     IMAGE_FILE="${UBUNTU_DISTRO}-server-cloudimg-amd64-disk1.img"
 else
@@ -124,32 +167,6 @@ echo "STD_USER_PASSWORD....: $STD_USER_PASSWORD"
 echo "SEARCH_DOMAIN........: $SEARCH_DOMAIN"
 echo "SSH_KEY_ID...........: $SSH_KEY_ID"
 echo ""
-
-function setStatus(){
-
-    description=$1
-    severity=$2
-
-    logger "$Name $Version: [${severity}] $description"
-
-
-    case "$severity" in
-        s)
-            echo -e "[${LightGreen}+${NC}] ${LightGreen}${description}${NC}"
-        ;;
-        f)
-            echo -e "[${Red}-${NC}] ${LightRed}${description}${NC}"
-        ;;
-        q)
-            echo -e "[${LightPurple}?${NC}] ${LightPurple}${description}${NC}"
-        ;;
-        *)
-            echo -e "[${LightCyan}*${NC}] ${LightCyan}${description}${NC}"
-        ;;
-    esac
-
-    [[ $WithVoice -eq 1 ]] && echo -e ${description} | espeak
-}
 
 function runCommand(){
 
@@ -328,11 +345,15 @@ fi
 #    exit -1
 #fi
 
-setStatus "STEP 8: Retrieve SSH keys from LaunchPad for: ${SSH_KEY_ID}..."
-if wget https://launchpad.net/~${SSH_KEY_ID}/+sshkeys -O ./keys ; then
-    setStatus " - Success." "s"
+setStatus "STEP 8: Retrieve SSH keys for: ${SSH_KEY_ID}..."
+if [ -f "${SSH_KEY_ID}" ]; then
+    absolute_path=$(realpath "${SSH_KEY_ID}")
+    cp "${SSH_KEY_ID}" ./keys
+    setStatus " - Success. Retrieved SSH keys from file path: ${absolute_path}" "s"
+elif wget https://launchpad.net/~${SSH_KEY_ID}/+sshkeys -O ./keys ; then
+    setStatus " - Success. Retrieved SSH keys from LaunchPad." "s"
 elif wget https://github.com/${SSH_KEY_ID}.keys -O ./keys ; then
-    setStatus " - Success." "s"
+    setStatus " - Success. Retrieved SSH keys from GitHub." "s"
 else
     setStatus " - Error completing step." "f"
     exit -1
