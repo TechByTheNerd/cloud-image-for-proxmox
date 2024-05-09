@@ -13,10 +13,10 @@ HOSTNAME=$(echo `hostname` | cut -d'.' -f1)
 HOST_DIGIT=${HOSTNAME: -1}
 
 echo "[*] Rebuilding 'AlmaLinux 8'..."
-./prox-cloud-template-add-almalinux.sh ${HOST_DIGIT}08000 SSD-0${HOST_DIGIT}A 8 $ACCOUNT_NAME $PASSWORD $DOMAIN $SSH_KEY_ID
+./prox-cloud-template-add-almalinux.sh ${HOST_DIGIT}18000 SSD-0${HOST_DIGIT}A 8 $ACCOUNT_NAME $PASSWORD $DOMAIN $SSH_KEY_ID
 
 echo "[*] Rebuilding 'AlmaLinux 9'..."
-./prox-cloud-template-add-almalinux.sh ${HOST_DIGIT}09000 SSD-0${HOST_DIGIT}A 9 $ACCOUNT_NAME $PASSWORD $DOMAIN $SSH_KEY_ID
+./prox-cloud-template-add-almalinux.sh ${HOST_DIGIT}19000 SSD-0${HOST_DIGIT}A 9 $ACCOUNT_NAME $PASSWORD $DOMAIN $SSH_KEY_ID
 
 # In this template, this assumes that your ProxMox server names end in a single digit
 # and that this script is running on one of those ProxMox nodes. Example: pmvm3
